@@ -251,7 +251,9 @@ CREATE TABLE IF NOT EXISTS user_achievements (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   achievement_id UUID NOT NULL REFERENCES achievements(id) ON DELETE CASCADE,
-  earned_at TIMESTAMPTZ DEFAULT NOW(),
+  achieved_at TIMESTAMPTZ DEFAULT NOW(),
+  is_active BOOLEAN DEFAULT TRUE,
+
   UNIQUE(user_id,achievement_id)
 );
 
@@ -472,8 +474,3 @@ DROP TRIGGER IF EXISTS trg_validate_answer ON quiz_user_answers;
 CREATE TRIGGER trg_validate_answer
 BEFORE INSERT OR UPDATE ON quiz_user_answers
 FOR EACH ROW EXECUTE FUNCTION validate_quiz_answer();
-
--- ░░ 6. SEED DATA ░░ -------------------------------------------------
-
--- helper to hash pwd quickly (bcrypt cost 12)
-\set pw_student  :'student_pwd'
